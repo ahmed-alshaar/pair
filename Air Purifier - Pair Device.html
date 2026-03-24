@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ILMA - Device Pairing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        'coconut': '#FDFCF0',
+                        'sage': '#A3B18A',
+                        'ginger': '#DDA15E',
+                        'peacock': '#113A5D',
+                        'peacock-light': '#1A5276',
+                    },
+                    backgroundImage: {
+                        'peacock-gradient': 'linear-gradient(135deg, #113A5D 0%, #1A5276 50%, #113A5D 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-panel {
+            background: rgba(253, 252, 240, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(253, 252, 240, 0.1);
+        }
+        .glass-card {
+            background: rgba(253, 252, 240, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(253, 252, 240, 0.2);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 0 10px rgba(253, 252, 240, 0.05);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            background: rgba(253, 252, 240, 0.15);
+            border-color: rgba(253, 252, 240, 0.3);
+            transform: translateY(-2px);
+        }
+        .glass-banner {
+            background: rgba(163, 177, 138, 0.2); /* Sage green tint */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(163, 177, 138, 0.3);
+        }
+        .radar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        .radar-pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(253, 252, 240, 0.2);
+            animation: pulse 2s infinite ease-out;
+            box-shadow: 0 0 20px rgba(253, 252, 240, 0.3);
+        }
+        .radar-pulse:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        .radar-pulse:nth-child(3) {
+            animation-delay: 1s;
+        }
+        .radar-core {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            background: rgba(253, 252, 240, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(253, 252, 240, 0.5);
+            z-index: 10;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        .tactile-btn {
+            box-shadow: 0 4px 0 0 rgba(0,0,0,0.2), 0 8px 15px rgba(0,0,0,0.1);
+            transition: all 0.1s ease;
+        }
+        .tactile-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 0 rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .tactile-btn-small {
+            box-shadow: 0 2px 0 0 rgba(0,0,0,0.15), 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.1s ease;
+        }
+        .tactile-btn-small:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 0 rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .pull-refresh {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(253, 252, 240, 0.6);
+            font-size: 0.75rem;
+            padding: 10px 0;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        .device-list-container:hover .pull-refresh {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-peacock-gradient min-h-screen w-full flex flex-col items-center justify-center overflow-hidden relative text-coconut">
+
+    <!-- Background decorative elements -->
+    <div class="hidden sm:block absolute top-10 left-10 w-64 h-64 bg-ginger/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
+    <div class="hidden sm:block absolute bottom-10 right-10 w-96 h-96 bg-sage/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
+
+    <!-- Main Mobile Container -->
+    <main id="pairing-container" class="w-full max-w-[375px] h-screen max-h-[840px] relative z-10 flex flex-col justify-between px-6 py-8 mx-auto shadow-2xl overflow-y-auto sm:h-[840px] sm:rounded-[40px] sm:border-[8px] sm:border-gray-900 bg-peacock-gradient">
+        
+        <!-- Header Section (Back/Skip) -->
+        <header id="pairing-header" class="flex justify-between items-center w-full pt-4 z-20">
+            <button class="w-10 h-10 rounded-full flex items-center justify-center bg-coconut/10 hover:bg-coconut/20 transition-colors text-coconut">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button class="text-coconut/70 hover:text-coconut font-medium text-sm tracking-wide transition-colors">
+                Skip
+            </button>
+        </header>
+
+        <!-- Search Animation Section -->
+        <section id="search-animation" class="w-full flex flex-col items-center justify-center pt-8 pb-4 z-20">
+            <div class="radar-container mb-6">
+                <div class="radar-pulse"></div>
+                <div class="radar-pulse"></div>
+                <div class="radar-pulse"></div>
+                <div class="radar-core glass-panel">
+                    <i class="fa-solid fa-wind text-2xl text-coconut"></i>
+                </div>
+            </div>
+            <div class="text-center space-y-2">
+                <h1 class="text-2xl font-bold tracking-tight text-coconut">Searching...</h1>
+                <p class="text-coconut/70 text-sm font-light">Looking for nearby ILMA devices</p>
+            </div>
+        </section>
+
+        <!-- Permissions Banners -->
+        <section id="permission-banners" class="w-full space-y-3 z-20 pb-4">
+            <div class="glass-banner rounded-xl p-3 flex items-start space-x-3">
+                <div class="w-8 h-8 rounded-full bg-sage/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <i class="fa-brands fa-bluetooth-b text-coconut text-sm"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-xs font-semibold text-coconut">Bluetooth Required</h3>
+                    <p class="text-[10px] text-coconut/80 mt-0.5 leading-tight">Enable Bluetooth to connect to your purifier.</p>
+                </div>
+                <button class="text-xs font-medium text-ginger hover:text-coconut transition-colors self-center whitespace-nowrap">Enable</button>
+            </div>
+        </section>
+
+        <!-- Device List Section -->
+        <section id="device-list" class="flex-1 w-full z-20 flex flex-col min-h-[200px] device-list-container relative">
+            <div class="pull-refresh">
+                <i class="fa-solid fa-arrow-down mr-2"></i> Pull to refresh
+            </div>
+            
+            <div class="space-y-3 overflow-y-auto pb-4 flex-1">
+                <!-- Device Card 1 -->
+                <div class="glass-card rounded-2xl p-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-coconut/10 flex items-center justify-center">
+                            <i class="fa-solid fa-fan text-coconut/80"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-coconut">ILMA Pure 300</h3>
+                            <div class="flex items-center text-[10px] text-coconut/60 mt-0.5">
+                                <i class="fa-solid fa-signal text-[8px] mr-1 text-sage"></i>
+                                <span>Strong signal • Seen just now</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="bg-coconut text-peacock font-semibold text-xs px-4 py-2 rounded-xl tactile-btn-small hover:bg-coconut/90">
+                        Pair
+                    </button>
+                </div>
+
+                <!-- Device Card 2 -->
+                <div class="glass-card rounded-2xl p-4 flex items-center justify-between opacity-70">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-coconut/10 flex items-center justify-center">
+                            <i class="fa-solid fa-fan text-coconut/80"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-coconut">ILMA Mini</h3>
+                            <div class="flex items-center text-[10px] text-coconut/60 mt-0.5">
+                                <i class="fa-solid fa-signal text-[8px] mr-1 text-ginger"></i>
+                                <span>Weak signal • 2 mins ago</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="bg-transparent border border-coconut/30 text-coconut font-medium text-xs px-4 py-2 rounded-xl hover:bg-coconut/10 transition-colors">
+                        Pair
+                    </button>
+                </div>
+            </div>
+
+            <!-- Troubleshooting Link -->
+            <div class="text-center pt-2 pb-4">
+                <a href="#" class="text-xs text-coconut/60 hover:text-coconut transition-colors underline decoration-coconut/30 underline-offset-2">
+                    Can't find it? Try these steps.
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer / Progress Section -->
+        <section id="pairing-footer" class="w-full flex flex-col items-center space-y-6 pb-6 z-20 mt-auto">
+            <!-- Progress Indicator (Step 3/4) -->
+            <div id="progress-indicator" class="flex items-center space-x-2 mb-2">
+                <div class="w-2 h-1.5 rounded-full bg-coconut/30"></div>
+                <div class="w-2 h-1.5 rounded-full bg-coconut/30"></div>
+                <div class="w-8 h-1.5 rounded-full bg-ginger"></div>
+                <div class="w-2 h-1.5 rounded-full bg-coconut/30"></div>
+            </div>
+
+            <!-- Next Button (Disabled state until paired) -->
+            <button id="next-btn" class="w-full bg-coconut/10 text-coconut/50 font-semibold text-base py-3.5 rounded-2xl flex items-center justify-center space-x-2 h-[56px] cursor-not-allowed border border-coconut/10 backdrop-blur-sm">
+                <span>Next</span>
+            </button>
+        </section>
+
+    </main>
+
+</body>
+</html>
